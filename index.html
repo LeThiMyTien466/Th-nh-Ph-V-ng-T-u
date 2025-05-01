@@ -1,0 +1,2365 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>Thành Phố Vũng Tàu</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/CcQunHuynVngTu_1.js"></script>
+        <script src="data/Name_2.js"></script>
+        <script src="data/address_3.js"></script>
+        <script src="data/Characteristics_4.js"></script>
+        <script src="data/yearofconstruction_5.js"></script>
+        <script src="data/yearofconstruction_6.js"></script>
+        <script src="data/PhnCp_7.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        }).fitBounds([[10.15110203127809,106.69616248562376],[11.045476527356033,108.16721279314591]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var title = new L.Control({'position':'topright'});
+        title.onAdd = function (map) {
+            this._div = L.DomUtil.create('div', 'info');
+            this.update();
+            return this._div;
+        };
+        title.update = function () {
+            this._div.innerHTML = '<h2>Thành Phố Vũng Tàu</h2>';
+        };
+        title.addTo(map);
+        var abstract = new L.Control({'position':'topright'});
+        abstract.onAdd = function (map) {
+            this._div = L.DomUtil.create('div',
+            'leaflet-control abstract');
+            this._div.id = 'abstract'
+                this._div.setAttribute("onmouseenter", "abstract.show()");
+                this._div.setAttribute("onmouseleave", "abstract.hide()");
+                this.hide();
+                return this._div;
+            };
+            abstract.hide = function () {
+                this._div.classList.remove("abstractUncollapsed");
+                this._div.classList.add("abstract");
+                this._div.innerHTML = 'i'
+            }
+            abstract.show = function () {
+                this._div.classList.remove("abstract");
+                this._div.classList.add("abstractUncollapsed");
+                this._div.innerHTML = ' Tác Giả Lê Thị Mỹ Tiên đã tạo ra Bản Đồ Về Thành Thành phố Vũng Tàu là một trong những trung tâm du lịch biển nổi bật của Việt Nam, nằm ở tỉnh Bà Rịa – Vũng Tàu, cách TP.HCM khoảng 100 km về phía Đông Nam. Vũng Tàu không chỉ nổi tiếng bởi bãi biển đẹp mà còn hấp dẫn du khách nhờ sự pha trộn giữa thiên nhiên, văn hóa, lịch sử và tín ngưỡng.';
+        };
+        abstract.addTo(map);
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+        }
+        map.createPane('pane_GoogleSatellite_0');
+        map.getPane('pane_GoogleSatellite_0').style.zIndex = 400;
+        var layer_GoogleSatellite_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_GoogleSatellite_0',
+            opacity: 1.0,
+            attribution: '<a href="https://www.google.at/permissions/geoguidelines/attr-guide.html">Map data ©2015 Google</a>',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 20
+        });
+        layer_GoogleSatellite_0;
+        map.addLayer(layer_GoogleSatellite_0);
+        function pop_CcQunHuynVngTu_1(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GID_2'] !== null ? autolinker.link(String(feature.properties['GID_2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GID_0'] !== null ? autolinker.link(String(feature.properties['GID_0']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COUNTRY'] !== null ? autolinker.link(String(feature.properties['COUNTRY']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['GID_1'] !== null ? autolinker.link(String(feature.properties['GID_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME_1'] !== null ? autolinker.link(String(feature.properties['NAME_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NL_NAME_1'] !== null ? autolinker.link(String(feature.properties['NL_NAME_1']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NAME_2'] !== null ? autolinker.link(String(feature.properties['NAME_2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['VARNAME_2'] !== null ? autolinker.link(String(feature.properties['VARNAME_2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NL_NAME_2'] !== null ? autolinker.link(String(feature.properties['NL_NAME_2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['TYPE_2'] !== null ? autolinker.link(String(feature.properties['TYPE_2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['ENGTYPE_2'] !== null ? autolinker.link(String(feature.properties['ENGTYPE_2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CC_2'] !== null ? autolinker.link(String(feature.properties['CC_2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['HASC_2'] !== null ? autolinker.link(String(feature.properties['HASC_2']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_CcQunHuynVngTu_1_0(feature) {
+            switch(String(feature.properties['NAME_2'])) {
+                case 'Bà Rịa':
+                    return {
+                pane: 'pane_CcQunHuynVngTu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,1,84,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Châu Đức':
+                    return {
+                pane: 'pane_CcQunHuynVngTu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,58,130,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Đất Đỏ':
+                    return {
+                pane: 'pane_CcQunHuynVngTu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(49,104,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Long Điền':
+                    return {
+                pane: 'pane_CcQunHuynVngTu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(33,144,141,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Tân Thành':
+                    return {
+                pane: 'pane_CcQunHuynVngTu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,183,121,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Vũng Tàu':
+                    return {
+                pane: 'pane_CcQunHuynVngTu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(143,215,68,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Xuyên Mộc':
+                    return {
+                pane: 'pane_CcQunHuynVngTu_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,231,37,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_CcQunHuynVngTu_1');
+        map.getPane('pane_CcQunHuynVngTu_1').style.zIndex = 401;
+        map.getPane('pane_CcQunHuynVngTu_1').style['mix-blend-mode'] = 'normal';
+        var layer_CcQunHuynVngTu_1 = new L.geoJson(json_CcQunHuynVngTu_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_CcQunHuynVngTu_1',
+            layerName: 'layer_CcQunHuynVngTu_1',
+            pane: 'pane_CcQunHuynVngTu_1',
+            onEachFeature: pop_CcQunHuynVngTu_1,
+            style: style_CcQunHuynVngTu_1_0,
+        });
+        bounds_group.addLayer(layer_CcQunHuynVngTu_1);
+        map.addLayer(layer_CcQunHuynVngTu_1);
+        function pop_Name_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type of Monument</th>\
+                        <td>' + (feature.properties['Type of Monument'] !== null ? autolinker.link(String(feature.properties['Type of Monument']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">address</th>\
+                        <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Characteristics</th>\
+                        <td>' + (feature.properties['Characteristics'] !== null ? autolinker.link(String(feature.properties['Characteristics']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">year of construction</th>\
+                        <td>' + (feature.properties['year of construction'] !== null ? autolinker.link(String(feature.properties['year of construction']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Y</th>\
+                        <td>' + (feature.properties['Y'] !== null ? autolinker.link(String(feature.properties['Y']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">X</th>\
+                        <td>' + (feature.properties['X'] !== null ? autolinker.link(String(feature.properties['X']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân Cấp</th>\
+                        <td>' + (feature.properties['Phân Cấp'] !== null ? autolinker.link(String(feature.properties['Phân Cấp']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Name_2_0(feature) {
+            switch(String(feature.properties['Name'])) {
+                case ' Đình thần, Miễu Bà và Chùa Long Sơn​':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(68,1,84,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Ăng ten Parapon (dài Viba) - Núi Lớn':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(72,23,105,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Bạch Dinh':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(71,42,122,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Chùa Linh Sơn':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(67,61,132,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Chùa Phước Lâm':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(61,78,138,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Đình Thắng Tam':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,94,141,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Đồn nhà máy nước':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(46,109,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Nhà cao cẳng  số 18 Lê Lợi':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(41,123,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Nhà Lớn Long Sơn (Đền Ông Trần)':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(35,137,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Nhà Má Tám Nhung':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,151,139,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Nhà số 86 Phan Chu Trinh':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(33,165,133,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Niết Bàn Tịnh Xá':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(46,179,124,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Thích Ca Phật Đài':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,192,111,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Trận địa pháo cổ Cầu Đá':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(101,203,94,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Trận địa pháo cổ trên núi Tao Phùng':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(137,213,72,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Trận địa pháo cổ và hầm thủy lôi Núi Lớn':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(176,221,47,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Trụ sở Ủy ban Việt Minh tại Vũng Tàu':
+                    return {
+                pane: 'pane_Name_2',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(216,226,25,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Name_2');
+        map.getPane('pane_Name_2').style.zIndex = 402;
+        map.getPane('pane_Name_2').style['mix-blend-mode'] = 'normal';
+        var layer_Name_2 = new L.geoJson(json_Name_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Name_2',
+            layerName: 'layer_Name_2',
+            pane: 'pane_Name_2',
+            onEachFeature: pop_Name_2,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Name_2_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Name_2);
+        map.addLayer(layer_Name_2);
+        function pop_address_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type of Monument</th>\
+                        <td>' + (feature.properties['Type of Monument'] !== null ? autolinker.link(String(feature.properties['Type of Monument']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">address</th>\
+                        <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Characteristics</th>\
+                        <td>' + (feature.properties['Characteristics'] !== null ? autolinker.link(String(feature.properties['Characteristics']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">year of construction</th>\
+                        <td>' + (feature.properties['year of construction'] !== null ? autolinker.link(String(feature.properties['year of construction']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Y</th>\
+                        <td>' + (feature.properties['Y'] !== null ? autolinker.link(String(feature.properties['Y']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">X</th>\
+                        <td>' + (feature.properties['X'] !== null ? autolinker.link(String(feature.properties['X']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân Cấp</th>\
+                        <td>' + (feature.properties['Phân Cấp'] !== null ? autolinker.link(String(feature.properties['Phân Cấp']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_address_3_0(feature) {
+            switch(String(feature.properties['address'])) {
+                case ' Đỉnh Hòn Sụp, Núi Lớn, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(48,18,59,1.0)',
+                interactive: true,
+            }
+                    break;
+                case ' Sườn phía Đông Núi Nứa, xã đảo Long Sơn, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(63,62,156,1.0)',
+                interactive: true,
+            }
+                    break;
+                case ' Xã đảo Long Sơn, thành phố Vũng Tàu, tỉnh Bà Rịa – Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(70,102,221,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '104 Hoàng Hoa Thám, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(69,141,253,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '608 Trần Phú, phường 5, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(47,178,244,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '66 Hạ Long, bãi Dứa, phường 1, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(26,212,207,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Cầu Đá, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(35,235,169,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Đường 30 tháng 4, phường 9, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(83,250,120,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Đường Nguyễn Bảo, phường 6, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(141,255,74,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Phía Bắc Núi Nhỏ, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(184,246,53,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Phường 5, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(220,225,55,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Phường Thắng Tam, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(246,196,58,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Số 1 Ba Cu, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,159,47,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Số 1 Trần Xuân Độ, phường Thắng Nhì, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(248,115,28,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Số 18 Lê Lợi, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,73,12,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Số 5 Phan Chu Trinh, phường 2, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(204,43,4,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Sườn Núi Lớn, TP Vũng Tàu':
+                    return {
+                pane: 'pane_address_3',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(167,20,1,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_address_3');
+        map.getPane('pane_address_3').style.zIndex = 403;
+        map.getPane('pane_address_3').style['mix-blend-mode'] = 'normal';
+        var layer_address_3 = new L.geoJson(json_address_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_address_3',
+            layerName: 'layer_address_3',
+            pane: 'pane_address_3',
+            onEachFeature: pop_address_3,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_address_3_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_address_3);
+        map.addLayer(layer_address_3);
+        function pop_Characteristics_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Type of Monument</strong><br />' + (feature.properties['Type of Monument'] !== null ? autolinker.link(String(feature.properties['Type of Monument']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">address</th>\
+                        <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2"><strong>Characteristics</strong><br />' + (feature.properties['Characteristics'] !== null ? autolinker.link(String(feature.properties['Characteristics']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">year of construction</th>\
+                        <td>' + (feature.properties['year of construction'] !== null ? autolinker.link(String(feature.properties['year of construction']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Y</th>\
+                        <td>' + (feature.properties['Y'] !== null ? autolinker.link(String(feature.properties['Y']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">X</th>\
+                        <td>' + (feature.properties['X'] !== null ? autolinker.link(String(feature.properties['X']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân Cấp</th>\
+                        <td>' + (feature.properties['Phân Cấp'] !== null ? autolinker.link(String(feature.properties['Phân Cấp']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Characteristics_4_0(feature) {
+            switch(String(feature.properties['Characteristics'])) {
+                case ' Dinh thự kiến trúc châu Âu, từng là nơi nghỉ mát của Toàn quyền Đông Dương và nơi giam lỏng vua Thành Thái ':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(215,25,28,1.0)',
+                interactive: true,
+            }
+                    break;
+                case ' Hệ thống anten parabol viba được Mỹ xây dựng, hiện còn lại dấu tích trên núi':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,60,44,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Bộ phận trong phòng tuyến Vũng Tàu của thực dân Pháp, gồm 4 khẩu pháo':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(233,95,60,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Công trình quân sự nhỏ, có lỗ châu mai, từng là nơi diễn ra nhiều trận đánh ác liệt ​':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(242,130,77,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Gồm 4 khẩu pháo, là một phần trong phòng tuyến Vũng Tàu của thực dân Pháp':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(251,165,93,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Gồm 6 khẩu pháo cỡ nòng 240mm, bố trí theo hình vòng cung, là một trong những trận địa pháo lớn nhất Đông Dương':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(253,188,114,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Hằng năm, người dân tổ chức các lễ hội truyền thống tại đây để cầu cho quốc thái dân an, mưa thuận gió hòa, và tưởng nhớ đến tổ tiên đã có công khai phá, thành lập làng xã':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,207,136,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Ngôi chùa cổ nhất Vũng Tàu với kiến trúc dạng tứ trụ, mang dáng dấp chùa cổ miền Nam':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(254,226,158,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Ngôi chùa cổ xưa nhất Vũng Tàu, từng bị người Pháp chiếm dụng để xây hoa tiêu ':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(255,245,180,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Ngôi chùa nằm trên triền Núi Nhỏ, hướng mặt ra biển, là địa điểm tham quan du lịch tín ngưỡng nổi tiếng':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(245,251,188,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Nơi diễn ra nhiều cuộc họp bí mật của Tỉnh ủy Bà Rịa–Long Khánh trong kháng chiến ':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(225,243,181,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Nơi nuôi giấu cán bộ cách mạng trong kháng chiến':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(206,235,175,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Quần thể gồm Đình thần Thắng Tam, Lăng Cá Ông, Miếu Bà Ngũ Hành; là nơi thờ các vị có công lập làng ​':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(186,227,169,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Quần thể kiến trúc mang đậm bản sắc văn hóa dân tộc, nơi sinh hoạt tín ngưỡng của cộng đồng địa phương':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(163,216,165,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Quần thể kiến trúc Phật giáo rộng 28ha, gồm nhiều ngôi chùa và khu vườn tượng Phật tích':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(133,195,170,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Từng là nhà của viên quan tư người Pháp, nơi nuôi giấu cán bộ cách mạng':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(103,173,176,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Từng là trụ sở Ủy ban Việt Minh, hiện là Nhà truyền thống cách mạng TP Vũng Tàu ':
+                    return {
+                pane: 'pane_Characteristics_4',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(73,152,181,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Characteristics_4');
+        map.getPane('pane_Characteristics_4').style.zIndex = 404;
+        map.getPane('pane_Characteristics_4').style['mix-blend-mode'] = 'normal';
+        var layer_Characteristics_4 = new L.geoJson(json_Characteristics_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Characteristics_4',
+            layerName: 'layer_Characteristics_4',
+            pane: 'pane_Characteristics_4',
+            onEachFeature: pop_Characteristics_4,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_Characteristics_4_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_Characteristics_4);
+        map.addLayer(layer_Characteristics_4);
+        function pop_yearofconstruction_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type of Monument</th>\
+                        <td>' + (feature.properties['Type of Monument'] !== null ? autolinker.link(String(feature.properties['Type of Monument']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">address</th>\
+                        <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Characteristics</th>\
+                        <td>' + (feature.properties['Characteristics'] !== null ? autolinker.link(String(feature.properties['Characteristics']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">year of construction</th>\
+                        <td>' + (feature.properties['year of construction'] !== null ? autolinker.link(String(feature.properties['year of construction']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Y</th>\
+                        <td>' + (feature.properties['Y'] !== null ? autolinker.link(String(feature.properties['Y']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">X</th>\
+                        <td>' + (feature.properties['X'] !== null ? autolinker.link(String(feature.properties['X']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân Cấp</th>\
+                        <td>' + (feature.properties['Phân Cấp'] !== null ? autolinker.link(String(feature.properties['Phân Cấp']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_yearofconstruction_5_0(feature) {
+            switch(String(feature.properties['year of construction'])) {
+                case ' Không rõ':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(11,4,5,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1835':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(33,20,36,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1886':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(52,36,70,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1907 đến 1916 ':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(62,53,107,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1908–1913':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(64,73,142,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1919':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(56,99,157,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1967':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(53,123,163,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1999':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(52,146,168,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2012':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(57,171,172,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Cuối thế kỷ XIX':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(75,194,173,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Đầu thế kỷ XX':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(122,214,174,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Không rõ':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(180,229,195,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Không rõ ':
+                    return {
+                pane: 'pane_yearofconstruction_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,245,229,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_yearofconstruction_5');
+        map.getPane('pane_yearofconstruction_5').style.zIndex = 405;
+        map.getPane('pane_yearofconstruction_5').style['mix-blend-mode'] = 'normal';
+        var layer_yearofconstruction_5 = new L.geoJson(json_yearofconstruction_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_yearofconstruction_5',
+            layerName: 'layer_yearofconstruction_5',
+            pane: 'pane_yearofconstruction_5',
+            onEachFeature: pop_yearofconstruction_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_yearofconstruction_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_yearofconstruction_5);
+        map.addLayer(layer_yearofconstruction_5);
+        function pop_yearofconstruction_6(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type of Monument</th>\
+                        <td>' + (feature.properties['Type of Monument'] !== null ? autolinker.link(String(feature.properties['Type of Monument']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">address</th>\
+                        <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Characteristics</th>\
+                        <td>' + (feature.properties['Characteristics'] !== null ? autolinker.link(String(feature.properties['Characteristics']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">year of construction</th>\
+                        <td>' + (feature.properties['year of construction'] !== null ? autolinker.link(String(feature.properties['year of construction']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Y</th>\
+                        <td>' + (feature.properties['Y'] !== null ? autolinker.link(String(feature.properties['Y']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">X</th>\
+                        <td>' + (feature.properties['X'] !== null ? autolinker.link(String(feature.properties['X']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân Cấp</th>\
+                        <td>' + (feature.properties['Phân Cấp'] !== null ? autolinker.link(String(feature.properties['Phân Cấp']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_yearofconstruction_6_0(feature) {
+            switch(String(feature.properties['year of construction'])) {
+                case ' Không rõ':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(250,250,250,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1835':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(230,230,230,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1886':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(209,209,209,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1907 đến 1916 ':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(189,189,189,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1908–1913':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(168,168,168,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1919':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(148,148,148,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1967':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(128,128,128,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '1999':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(107,107,107,1.0)',
+                interactive: true,
+            }
+                    break;
+                case '2012':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(87,87,87,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Cuối thế kỷ XIX':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(66,66,66,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Đầu thế kỷ XX':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(46,46,46,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Không rõ':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(25,25,25,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Không rõ ':
+                    return {
+                pane: 'pane_yearofconstruction_6',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(5,5,5,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_yearofconstruction_6');
+        map.getPane('pane_yearofconstruction_6').style.zIndex = 406;
+        map.getPane('pane_yearofconstruction_6').style['mix-blend-mode'] = 'normal';
+        var layer_yearofconstruction_6 = new L.geoJson(json_yearofconstruction_6, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_yearofconstruction_6',
+            layerName: 'layer_yearofconstruction_6',
+            pane: 'pane_yearofconstruction_6',
+            onEachFeature: pop_yearofconstruction_6,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_yearofconstruction_6_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_yearofconstruction_6);
+        map.addLayer(layer_yearofconstruction_6);
+        function pop_PhnCp_7(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">ID</th>\
+                        <td>' + (feature.properties['ID'] !== null ? autolinker.link(String(feature.properties['ID']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Type of Monument</th>\
+                        <td>' + (feature.properties['Type of Monument'] !== null ? autolinker.link(String(feature.properties['Type of Monument']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(String(feature.properties['Name']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">address</th>\
+                        <td>' + (feature.properties['address'] !== null ? autolinker.link(String(feature.properties['address']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Characteristics</th>\
+                        <td>' + (feature.properties['Characteristics'] !== null ? autolinker.link(String(feature.properties['Characteristics']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">year of construction</th>\
+                        <td>' + (feature.properties['year of construction'] !== null ? autolinker.link(String(feature.properties['year of construction']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Y</th>\
+                        <td>' + (feature.properties['Y'] !== null ? autolinker.link(String(feature.properties['Y']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">X</th>\
+                        <td>' + (feature.properties['X'] !== null ? autolinker.link(String(feature.properties['X']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">Phân Cấp</th>\
+                        <td>' + (feature.properties['Phân Cấp'] !== null ? autolinker.link(String(feature.properties['Phân Cấp']).replace(/'/g, '\'').toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_PhnCp_7_0(feature) {
+            switch(String(feature.properties['Phân Cấp'])) {
+                case 'Di tích cấp quốc gia':
+                    return {
+                pane: 'pane_PhnCp_7',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(208,28,139,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Di tích cấp Tỉnh':
+                    return {
+                pane: 'pane_PhnCp_7',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(247,247,247,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_PhnCp_7');
+        map.getPane('pane_PhnCp_7').style.zIndex = 407;
+        map.getPane('pane_PhnCp_7').style['mix-blend-mode'] = 'normal';
+        var layer_PhnCp_7 = new L.geoJson(json_PhnCp_7, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_PhnCp_7',
+            layerName: 'layer_PhnCp_7',
+            pane: 'pane_PhnCp_7',
+            onEachFeature: pop_PhnCp_7,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_PhnCp_7_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_PhnCp_7);
+        map.addLayer(layer_PhnCp_7);
+        var overlaysTree = [
+            {label: 'Phân Cấp<br /><table><tr><td style="text-align: center;"><img src="legend/PhnCp_7_Ditíchcấpquốcgia0.png" /></td><td>Di tích cấp quốc gia</td></tr><tr><td style="text-align: center;"><img src="legend/PhnCp_7_DitíchcấpTỉnh1.png" /></td><td>Di tích cấp Tỉnh</td></tr></table>', layer: layer_PhnCp_7},
+            {label: 'year of construction<br /><table><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_Khôngrõ0.png" /></td><td> Không rõ</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_18351.png" /></td><td>1835</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_18862.png" /></td><td>1886</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_1907đến19163.png" /></td><td>1907 đến 1916 </td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_190819134.png" /></td><td>1908–1913</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_19195.png" /></td><td>1919</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_19676.png" /></td><td>1967</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_19997.png" /></td><td>1999</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_20128.png" /></td><td>2012</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_CuốithếkỷXIX9.png" /></td><td>Cuối thế kỷ XIX</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_ĐầuthếkỷXX10.png" /></td><td>Đầu thế kỷ XX</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_Khôngrõ11.png" /></td><td>Không rõ</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_6_Khôngrõ12.png" /></td><td>Không rõ </td></tr></table>', layer: layer_yearofconstruction_6},
+            {label: 'year of construction<br /><table><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_Khôngrõ0.png" /></td><td> Không rõ</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_18351.png" /></td><td>1835</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_18862.png" /></td><td>1886</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_1907đến19163.png" /></td><td>1907 đến 1916 </td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_190819134.png" /></td><td>1908–1913</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_19195.png" /></td><td>1919</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_19676.png" /></td><td>1967</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_19997.png" /></td><td>1999</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_20128.png" /></td><td>2012</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_CuốithếkỷXIX9.png" /></td><td>Cuối thế kỷ XIX</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_ĐầuthếkỷXX10.png" /></td><td>Đầu thế kỷ XX</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_Khôngrõ11.png" /></td><td>Không rõ</td></tr><tr><td style="text-align: center;"><img src="legend/yearofconstruction_5_Khôngrõ12.png" /></td><td>Không rõ </td></tr></table>', layer: layer_yearofconstruction_5},
+            {label: 'Characteristics<br /><table><tr><td style="text-align: center;"><img src="legend/Characteristics_4_DinhthựkiếntrúcchâuÂutừnglànơinghỉmátcủaToànquyềnĐôngDươngvànơigiamlỏngvuaThànhThái0.png" /></td><td> Dinh thự kiến trúc châu Âu, từng là nơi nghỉ mát của Toàn quyền Đông Dương và nơi giam lỏng vua Thành Thái </td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_HệthốngantenparabolvibađượcMỹxâydựnghiệncònlạidấutíchtrênnúi1.png" /></td><td> Hệ thống anten parabol viba được Mỹ xây dựng, hiện còn lại dấu tích trên núi</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_BộphậntrongphòngtuyếnVũngTàucủathựcdânPhápgồm4khẩupháo2.png" /></td><td>Bộ phận trong phòng tuyến Vũng Tàu của thực dân Pháp, gồm 4 khẩu pháo</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_Côngtrìnhquânsựnhỏcólỗchâumaitừnglànơidiễnranhiềutrậnđánhácliệt3.png" /></td><td>Công trình quân sự nhỏ, có lỗ châu mai, từng là nơi diễn ra nhiều trận đánh ác liệt ​</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_Gồm4khẩupháolàmộtphầntrongphòngtuyếnVũngTàucủathựcdânPháp4.png" /></td><td>Gồm 4 khẩu pháo, là một phần trong phòng tuyến Vũng Tàu của thực dân Pháp</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_Gồm6khẩupháocỡnòng240mmbốtrítheohìnhvòngcunglàmộttrongnhữngtrậnđịapháolớnnhấtĐôngDương5.png" /></td><td>Gồm 6 khẩu pháo cỡ nòng 240mm, bố trí theo hình vòng cung, là một trong những trận địa pháo lớn nhất Đông Dương</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_Hằngnămngườidântổchứccáclễhộitruyềnthốngtạiđâyđểcầuchoquốctháidânanmưathuậngióhòavàtưởngnhớđếntổtiênđãcócôngkhaipháthànhlậplàngxã6.png" /></td><td>Hằng năm, người dân tổ chức các lễ hội truyền thống tại đây để cầu cho quốc thái dân an, mưa thuận gió hòa, và tưởng nhớ đến tổ tiên đã có công khai phá, thành lập làng xã</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_NgôichùacổnhấtVũngTàuvớikiếntrúcdạngtứtrụmangdángdấpchùacổmiềnNam7.png" /></td><td>Ngôi chùa cổ nhất Vũng Tàu với kiến trúc dạng tứ trụ, mang dáng dấp chùa cổ miền Nam</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_NgôichùacổxưanhấtVũngTàutừngbịngườiPhápchiếmdụngđểxâyhoatiêu8.png" /></td><td>Ngôi chùa cổ xưa nhất Vũng Tàu, từng bị người Pháp chiếm dụng để xây hoa tiêu </td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_NgôichùanằmtrêntriềnNúiNhỏhướngmặtrabiểnlàđịađiểmthamquandulịchtínngưỡngnổitiếng9.png" /></td><td>Ngôi chùa nằm trên triền Núi Nhỏ, hướng mặt ra biển, là địa điểm tham quan du lịch tín ngưỡng nổi tiếng</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_NơidiễnranhiềucuộchọpbímậtcủaTỉnhủyBàRịaLongKhánhtrongkhángchiến10.png" /></td><td>Nơi diễn ra nhiều cuộc họp bí mật của Tỉnh ủy Bà Rịa–Long Khánh trong kháng chiến </td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_Nơinuôigiấucánbộcáchmạngtrongkhángchiến11.png" /></td><td>Nơi nuôi giấu cán bộ cách mạng trong kháng chiến</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_QuầnthểgồmĐìnhthầnThắngTamLăngCáÔngMiếuBàNgũHànhlànơithờcácvịcócônglậplàng12.png" /></td><td>Quần thể gồm Đình thần Thắng Tam, Lăng Cá Ông, Miếu Bà Ngũ Hành; là nơi thờ các vị có công lập làng ​</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_Quầnthểkiếntrúcmangđậmbảnsắcvănhóadântộcnơisinhhoạttínngưỡngcủacộngđồngđịaphương13.png" /></td><td>Quần thể kiến trúc mang đậm bản sắc văn hóa dân tộc, nơi sinh hoạt tín ngưỡng của cộng đồng địa phương</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_QuầnthểkiếntrúcPhậtgiáorộng28hagồmnhiềungôichùavàkhuvườntượngPhậttích14.png" /></td><td>Quần thể kiến trúc Phật giáo rộng 28ha, gồm nhiều ngôi chùa và khu vườn tượng Phật tích</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_TừnglànhàcủaviênquantưngườiPhápnơinuôigiấucánbộcáchmạng15.png" /></td><td>Từng là nhà của viên quan tư người Pháp, nơi nuôi giấu cán bộ cách mạng</td></tr><tr><td style="text-align: center;"><img src="legend/Characteristics_4_TừnglàtrụsởỦybanViệtMinhhiệnlàNhàtruyềnthốngcáchmạngTPVũngTàu16.png" /></td><td>Từng là trụ sở Ủy ban Việt Minh, hiện là Nhà truyền thống cách mạng TP Vũng Tàu </td></tr></table>', layer: layer_Characteristics_4},
+            {label: 'address<br /><table><tr><td style="text-align: center;"><img src="legend/address_3_ĐỉnhHònSụpNúiLớnTPVũngTàu0.png" /></td><td> Đỉnh Hòn Sụp, Núi Lớn, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_SườnphíaĐôngNúiNứaxãđảoLongSơnTPVũngTàu1.png" /></td><td> Sườn phía Đông Núi Nứa, xã đảo Long Sơn, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_XãđảoLongSơnthànhphốVũngTàutỉnhBàRịaVũngTàu2.png" /></td><td> Xã đảo Long Sơn, thành phố Vũng Tàu, tỉnh Bà Rịa – Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_104HoàngHoaThámTPVũngTàu3.png" /></td><td>104 Hoàng Hoa Thám, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_608TrầnPhúphường5TPVũngTàu4.png" /></td><td>608 Trần Phú, phường 5, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_66HạLongbãiDứaphường1TPVũngTàu5.png" /></td><td>66 Hạ Long, bãi Dứa, phường 1, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_CầuĐáTPVũngTàu6.png" /></td><td>Cầu Đá, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_Đường30tháng4phường9TPVũngTàu7.png" /></td><td>Đường 30 tháng 4, phường 9, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_ĐườngNguyễnBảophường6TPVũngTàu8.png" /></td><td>Đường Nguyễn Bảo, phường 6, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_PhíaBắcNúiNhỏTPVũngTàu9.png" /></td><td>Phía Bắc Núi Nhỏ, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_Phường5TPVũngTàu10.png" /></td><td>Phường 5, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_PhườngThắngTamTPVũngTàu11.png" /></td><td>Phường Thắng Tam, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_Số1BaCuTPVũngTàu12.png" /></td><td>Số 1 Ba Cu, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_Số1TrầnXuânĐộphườngThắngNhìTPVũngTàu13.png" /></td><td>Số 1 Trần Xuân Độ, phường Thắng Nhì, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_Số18LêLợiTPVũngTàu14.png" /></td><td>Số 18 Lê Lợi, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_Số5PhanChuTrinhphường2TPVũngTàu15.png" /></td><td>Số 5 Phan Chu Trinh, phường 2, TP Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/address_3_SườnNúiLớnTPVũngTàu16.png" /></td><td>Sườn Núi Lớn, TP Vũng Tàu</td></tr></table>', layer: layer_address_3},
+            {label: 'Name <br /><table><tr><td style="text-align: center;"><img src="legend/Name_2_ĐìnhthầnMiễuBàvàChùaLongSơn0.png" /></td><td> Đình thần, Miễu Bà và Chùa Long Sơn​</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_ĂngtenParapondàiVibaNúiLớn1.png" /></td><td>Ăng ten Parapon (dài Viba) - Núi Lớn</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_BạchDinh2.png" /></td><td>Bạch Dinh</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_ChùaLinhSơn3.png" /></td><td>Chùa Linh Sơn</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_ChùaPhướcLâm4.png" /></td><td>Chùa Phước Lâm</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_ĐìnhThắngTam5.png" /></td><td>Đình Thắng Tam</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_Đồnnhàmáynước6.png" /></td><td>Đồn nhà máy nước</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_Nhàcaocẳngsố18LêLợi7.png" /></td><td>Nhà cao cẳng  số 18 Lê Lợi</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_NhàLớnLongSơnĐềnÔngTrần8.png" /></td><td>Nhà Lớn Long Sơn (Đền Ông Trần)</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_NhàMáTámNhung9.png" /></td><td>Nhà Má Tám Nhung</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_Nhàsố86PhanChuTrinh10.png" /></td><td>Nhà số 86 Phan Chu Trinh</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_NiếtBànTịnhXá11.png" /></td><td>Niết Bàn Tịnh Xá</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_ThíchCaPhậtĐài12.png" /></td><td>Thích Ca Phật Đài</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_TrậnđịapháocổCầuĐá13.png" /></td><td>Trận địa pháo cổ Cầu Đá</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_TrậnđịapháocổtrênnúiTaoPhùng14.png" /></td><td>Trận địa pháo cổ trên núi Tao Phùng</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_TrậnđịapháocổvàhầmthủylôiNúiLớn15.png" /></td><td>Trận địa pháo cổ và hầm thủy lôi Núi Lớn</td></tr><tr><td style="text-align: center;"><img src="legend/Name_2_TrụsởỦybanViệtMinhtạiVũngTàu16.png" /></td><td>Trụ sở Ủy ban Việt Minh tại Vũng Tàu</td></tr></table>', layer: layer_Name_2},
+            {label: 'Các Quận/Huyện Vũng Tàu<br /><table><tr><td style="text-align: center;"><img src="legend/CcQunHuynVngTu_1_BàRịa0.png" /></td><td>Bà Rịa</td></tr><tr><td style="text-align: center;"><img src="legend/CcQunHuynVngTu_1_ChâuĐức1.png" /></td><td>Châu Đức</td></tr><tr><td style="text-align: center;"><img src="legend/CcQunHuynVngTu_1_ĐấtĐỏ2.png" /></td><td>Đất Đỏ</td></tr><tr><td style="text-align: center;"><img src="legend/CcQunHuynVngTu_1_LongĐiền3.png" /></td><td>Long Điền</td></tr><tr><td style="text-align: center;"><img src="legend/CcQunHuynVngTu_1_TânThành4.png" /></td><td>Tân Thành</td></tr><tr><td style="text-align: center;"><img src="legend/CcQunHuynVngTu_1_VũngTàu5.png" /></td><td>Vũng Tàu</td></tr><tr><td style="text-align: center;"><img src="legend/CcQunHuynVngTu_1_XuyênMộc6.png" /></td><td>Xuyên Mộc</td></tr></table>', layer: layer_CcQunHuynVngTu_1},
+            {label: "Google Satellite", layer: layer_GoogleSatellite_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: true,
+        });
+        lay.addTo(map);
+        setBounds();
+        var i = 0;
+        layer_CcQunHuynVngTu_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NAME_2'] !== null?String('<div style="color: #323232; font-size: 14pt; font-weight: bold; font-family: \'Times New Roman\', sans-serif;">' + layer.feature.properties['NAME_2']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CcQunHuynVngTu_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"Characteristics": "str","Phân Cấp": "str","address": "str","year of construction": "str","Name": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+        var i = 0;
+        layer_CcQunHuynVngTu_1.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((layer.feature.properties['NAME_2'] !== null?String('<div style="color: #323232; font-size: 14pt; font-weight: bold; font-family: \'Times New Roman\', sans-serif;">' + layer.feature.properties['NAME_2']) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_CcQunHuynVngTu_1'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Characteristics = document.createElement('div');
+            div_Characteristics.id = "div_Characteristics";
+            div_Characteristics.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Characteristics);
+            sel_Characteristics = document.createElement('select');
+            sel_Characteristics.multiple = true;
+            sel_Characteristics.size = 10;
+            sel_Characteristics.id = "sel_Characteristics";
+            var Characteristics_options_str = "<option value='' unselected></option>";
+            sel_Characteristics.onchange = function(){filterFunc()};
+            Characteristics_options_str  += '<option value=" Dinh thự kiến trúc châu Âu, từng là nơi nghỉ mát của Toàn quyền Đông Dương và nơi giam lỏng vua Thành Thái "> Dinh thự kiến trúc châu Âu, từng là nơi nghỉ mát của Toàn quyền Đông Dương và nơi giam lỏng vua Thành Thái </option>';
+            Characteristics_options_str  += '<option value=" Hệ thống anten parabol viba được Mỹ xây dựng, hiện còn lại dấu tích trên núi"> Hệ thống anten parabol viba được Mỹ xây dựng, hiện còn lại dấu tích trên núi</option>';
+            Characteristics_options_str  += '<option value="Bộ phận trong phòng tuyến Vũng Tàu của thực dân Pháp, gồm 4 khẩu pháo">Bộ phận trong phòng tuyến Vũng Tàu của thực dân Pháp, gồm 4 khẩu pháo</option>';
+            Characteristics_options_str  += '<option value="Công trình quân sự nhỏ, có lỗ châu mai, từng là nơi diễn ra nhiều trận đánh ác liệt ​">Công trình quân sự nhỏ, có lỗ châu mai, từng là nơi diễn ra nhiều trận đánh ác liệt ​</option>';
+            Characteristics_options_str  += '<option value="Gồm 4 khẩu pháo, là một phần trong phòng tuyến Vũng Tàu của thực dân Pháp">Gồm 4 khẩu pháo, là một phần trong phòng tuyến Vũng Tàu của thực dân Pháp</option>';
+            Characteristics_options_str  += '<option value="Gồm 6 khẩu pháo cỡ nòng 240mm, bố trí theo hình vòng cung, là một trong những trận địa pháo lớn nhất Đông Dương">Gồm 6 khẩu pháo cỡ nòng 240mm, bố trí theo hình vòng cung, là một trong những trận địa pháo lớn nhất Đông Dương</option>';
+            Characteristics_options_str  += '<option value="Hằng năm, người dân tổ chức các lễ hội truyền thống tại đây để cầu cho quốc thái dân an, mưa thuận gió hòa, và tưởng nhớ đến tổ tiên đã có công khai phá, thành lập làng xã">Hằng năm, người dân tổ chức các lễ hội truyền thống tại đây để cầu cho quốc thái dân an, mưa thuận gió hòa, và tưởng nhớ đến tổ tiên đã có công khai phá, thành lập làng xã</option>';
+            Characteristics_options_str  += '<option value="Ngôi chùa cổ nhất Vũng Tàu với kiến trúc dạng tứ trụ, mang dáng dấp chùa cổ miền Nam">Ngôi chùa cổ nhất Vũng Tàu với kiến trúc dạng tứ trụ, mang dáng dấp chùa cổ miền Nam</option>';
+            Characteristics_options_str  += '<option value="Ngôi chùa cổ xưa nhất Vũng Tàu, từng bị người Pháp chiếm dụng để xây hoa tiêu ">Ngôi chùa cổ xưa nhất Vũng Tàu, từng bị người Pháp chiếm dụng để xây hoa tiêu </option>';
+            Characteristics_options_str  += '<option value="Ngôi chùa nằm trên triền Núi Nhỏ, hướng mặt ra biển, là địa điểm tham quan du lịch tín ngưỡng nổi tiếng">Ngôi chùa nằm trên triền Núi Nhỏ, hướng mặt ra biển, là địa điểm tham quan du lịch tín ngưỡng nổi tiếng</option>';
+            Characteristics_options_str  += '<option value="Nơi diễn ra nhiều cuộc họp bí mật của Tỉnh ủy Bà Rịa–Long Khánh trong kháng chiến ">Nơi diễn ra nhiều cuộc họp bí mật của Tỉnh ủy Bà Rịa–Long Khánh trong kháng chiến </option>';
+            Characteristics_options_str  += '<option value="Nơi nuôi giấu cán bộ cách mạng trong kháng chiến">Nơi nuôi giấu cán bộ cách mạng trong kháng chiến</option>';
+            Characteristics_options_str  += '<option value="Quần thể gồm Đình thần Thắng Tam, Lăng Cá Ông, Miếu Bà Ngũ Hành; là nơi thờ các vị có công lập làng ​">Quần thể gồm Đình thần Thắng Tam, Lăng Cá Ông, Miếu Bà Ngũ Hành; là nơi thờ các vị có công lập làng ​</option>';
+            Characteristics_options_str  += '<option value="Quần thể kiến trúc Phật giáo rộng 28ha, gồm nhiều ngôi chùa và khu vườn tượng Phật tích">Quần thể kiến trúc Phật giáo rộng 28ha, gồm nhiều ngôi chùa và khu vườn tượng Phật tích</option>';
+            Characteristics_options_str  += '<option value="Quần thể kiến trúc mang đậm bản sắc văn hóa dân tộc, nơi sinh hoạt tín ngưỡng của cộng đồng địa phương">Quần thể kiến trúc mang đậm bản sắc văn hóa dân tộc, nơi sinh hoạt tín ngưỡng của cộng đồng địa phương</option>';
+            Characteristics_options_str  += '<option value="Từng là nhà của viên quan tư người Pháp, nơi nuôi giấu cán bộ cách mạng">Từng là nhà của viên quan tư người Pháp, nơi nuôi giấu cán bộ cách mạng</option>';
+            Characteristics_options_str  += '<option value="Từng là trụ sở Ủy ban Việt Minh, hiện là Nhà truyền thống cách mạng TP Vũng Tàu ">Từng là trụ sở Ủy ban Việt Minh, hiện là Nhà truyền thống cách mạng TP Vũng Tàu </option>';
+            sel_Characteristics.innerHTML = Characteristics_options_str;
+            div_Characteristics.appendChild(sel_Characteristics);
+            var lab_Characteristics = document.createElement('div');
+            lab_Characteristics.innerHTML = 'Characteristics';
+            lab_Characteristics.className = 'filterlabel';
+            div_Characteristics.appendChild(lab_Characteristics);
+            var reset_Characteristics = document.createElement('div');
+            reset_Characteristics.innerHTML = 'clear filter';
+            reset_Characteristics.className = 'filterlabel';
+            reset_Characteristics.onclick = function() {
+                var options = document.getElementById("sel_Characteristics").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Characteristics.appendChild(reset_Characteristics);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_PhnCp = document.createElement('div');
+            div_PhnCp.id = "div_PhnCp";
+            div_PhnCp.className= "filterselect";
+            document.getElementById("menu").appendChild(div_PhnCp);
+            sel_PhnCp = document.createElement('select');
+            sel_PhnCp.multiple = true;
+            sel_PhnCp.size = 2;
+            sel_PhnCp.id = "sel_PhnCp";
+            var PhnCp_options_str = "<option value='' unselected></option>";
+            sel_PhnCp.onchange = function(){filterFunc()};
+            PhnCp_options_str  += '<option value="Di tích cấp Tỉnh">Di tích cấp Tỉnh</option>';
+            PhnCp_options_str  += '<option value="Di tích cấp quốc gia">Di tích cấp quốc gia</option>';
+            sel_PhnCp.innerHTML = PhnCp_options_str;
+            div_PhnCp.appendChild(sel_PhnCp);
+            var lab_PhnCp = document.createElement('div');
+            lab_PhnCp.innerHTML = 'Phân Cấp';
+            lab_PhnCp.className = 'filterlabel';
+            div_PhnCp.appendChild(lab_PhnCp);
+            var reset_PhnCp = document.createElement('div');
+            reset_PhnCp.innerHTML = 'clear filter';
+            reset_PhnCp.className = 'filterlabel';
+            reset_PhnCp.onclick = function() {
+                var options = document.getElementById("sel_PhnCp").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_PhnCp.appendChild(reset_PhnCp);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_address = document.createElement('div');
+            div_address.id = "div_address";
+            div_address.className= "filterselect";
+            document.getElementById("menu").appendChild(div_address);
+            sel_address = document.createElement('select');
+            sel_address.multiple = true;
+            sel_address.size = 10;
+            sel_address.id = "sel_address";
+            var address_options_str = "<option value='' unselected></option>";
+            sel_address.onchange = function(){filterFunc()};
+            address_options_str  += '<option value=" Sườn phía Đông Núi Nứa, xã đảo Long Sơn, TP Vũng Tàu"> Sườn phía Đông Núi Nứa, xã đảo Long Sơn, TP Vũng Tàu</option>';
+            address_options_str  += '<option value=" Xã đảo Long Sơn, thành phố Vũng Tàu, tỉnh Bà Rịa – Vũng Tàu"> Xã đảo Long Sơn, thành phố Vũng Tàu, tỉnh Bà Rịa – Vũng Tàu</option>';
+            address_options_str  += '<option value=" Đỉnh Hòn Sụp, Núi Lớn, TP Vũng Tàu"> Đỉnh Hòn Sụp, Núi Lớn, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="104 Hoàng Hoa Thám, TP Vũng Tàu">104 Hoàng Hoa Thám, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="608 Trần Phú, phường 5, TP Vũng Tàu">608 Trần Phú, phường 5, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="66 Hạ Long, bãi Dứa, phường 1, TP Vũng Tàu">66 Hạ Long, bãi Dứa, phường 1, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Cầu Đá, TP Vũng Tàu">Cầu Đá, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Phía Bắc Núi Nhỏ, TP Vũng Tàu">Phía Bắc Núi Nhỏ, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Phường 5, TP Vũng Tàu">Phường 5, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Phường Thắng Tam, TP Vũng Tàu">Phường Thắng Tam, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Sườn Núi Lớn, TP Vũng Tàu">Sườn Núi Lớn, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Số 1 Ba Cu, TP Vũng Tàu">Số 1 Ba Cu, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Số 1 Trần Xuân Độ, phường Thắng Nhì, TP Vũng Tàu">Số 1 Trần Xuân Độ, phường Thắng Nhì, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Số 18 Lê Lợi, TP Vũng Tàu">Số 18 Lê Lợi, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Số 5 Phan Chu Trinh, phường 2, TP Vũng Tàu">Số 5 Phan Chu Trinh, phường 2, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Đường 30 tháng 4, phường 9, TP Vũng Tàu">Đường 30 tháng 4, phường 9, TP Vũng Tàu</option>';
+            address_options_str  += '<option value="Đường Nguyễn Bảo, phường 6, TP Vũng Tàu">Đường Nguyễn Bảo, phường 6, TP Vũng Tàu</option>';
+            sel_address.innerHTML = address_options_str;
+            div_address.appendChild(sel_address);
+            var lab_address = document.createElement('div');
+            lab_address.innerHTML = 'address';
+            lab_address.className = 'filterlabel';
+            div_address.appendChild(lab_address);
+            var reset_address = document.createElement('div');
+            reset_address.innerHTML = 'clear filter';
+            reset_address.className = 'filterlabel';
+            reset_address.onclick = function() {
+                var options = document.getElementById("sel_address").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_address.appendChild(reset_address);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_yearofconstruction = document.createElement('div');
+            div_yearofconstruction.id = "div_yearofconstruction";
+            div_yearofconstruction.className= "filterselect";
+            document.getElementById("menu").appendChild(div_yearofconstruction);
+            sel_yearofconstruction = document.createElement('select');
+            sel_yearofconstruction.multiple = true;
+            sel_yearofconstruction.size = 10;
+            sel_yearofconstruction.id = "sel_yearofconstruction";
+            var yearofconstruction_options_str = "<option value='' unselected></option>";
+            sel_yearofconstruction.onchange = function(){filterFunc()};
+            yearofconstruction_options_str  += '<option value=" Không rõ"> Không rõ</option>';
+            yearofconstruction_options_str  += '<option value="1835">1835</option>';
+            yearofconstruction_options_str  += '<option value="1886">1886</option>';
+            yearofconstruction_options_str  += '<option value="1907 đến 1916 ">1907 đến 1916 </option>';
+            yearofconstruction_options_str  += '<option value="1908–1913">1908–1913</option>';
+            yearofconstruction_options_str  += '<option value="1919">1919</option>';
+            yearofconstruction_options_str  += '<option value="1967">1967</option>';
+            yearofconstruction_options_str  += '<option value="1999">1999</option>';
+            yearofconstruction_options_str  += '<option value="2012">2012</option>';
+            yearofconstruction_options_str  += '<option value="Cuối thế kỷ XIX">Cuối thế kỷ XIX</option>';
+            yearofconstruction_options_str  += '<option value="Không rõ">Không rõ</option>';
+            yearofconstruction_options_str  += '<option value="Không rõ ">Không rõ </option>';
+            yearofconstruction_options_str  += '<option value="Đầu thế kỷ XX">Đầu thế kỷ XX</option>';
+            sel_yearofconstruction.innerHTML = yearofconstruction_options_str;
+            div_yearofconstruction.appendChild(sel_yearofconstruction);
+            var lab_yearofconstruction = document.createElement('div');
+            lab_yearofconstruction.innerHTML = 'year of construction';
+            lab_yearofconstruction.className = 'filterlabel';
+            div_yearofconstruction.appendChild(lab_yearofconstruction);
+            var reset_yearofconstruction = document.createElement('div');
+            reset_yearofconstruction.innerHTML = 'clear filter';
+            reset_yearofconstruction.className = 'filterlabel';
+            reset_yearofconstruction.onclick = function() {
+                var options = document.getElementById("sel_yearofconstruction").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_yearofconstruction.appendChild(reset_yearofconstruction);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_Name = document.createElement('div');
+            div_Name.id = "div_Name";
+            div_Name.className= "filterselect";
+            document.getElementById("menu").appendChild(div_Name);
+            sel_Name = document.createElement('select');
+            sel_Name.multiple = true;
+            sel_Name.size = 10;
+            sel_Name.id = "sel_Name";
+            var Name_options_str = "<option value='' unselected></option>";
+            sel_Name.onchange = function(){filterFunc()};
+            Name_options_str  += '<option value=" Đình thần, Miễu Bà và Chùa Long Sơn​"> Đình thần, Miễu Bà và Chùa Long Sơn​</option>';
+            Name_options_str  += '<option value="Bạch Dinh">Bạch Dinh</option>';
+            Name_options_str  += '<option value="Chùa Linh Sơn">Chùa Linh Sơn</option>';
+            Name_options_str  += '<option value="Chùa Phước Lâm">Chùa Phước Lâm</option>';
+            Name_options_str  += '<option value="Nhà Lớn Long Sơn (Đền Ông Trần)">Nhà Lớn Long Sơn (Đền Ông Trần)</option>';
+            Name_options_str  += '<option value="Nhà Má Tám Nhung">Nhà Má Tám Nhung</option>';
+            Name_options_str  += '<option value="Nhà cao cẳng  số 18 Lê Lợi">Nhà cao cẳng  số 18 Lê Lợi</option>';
+            Name_options_str  += '<option value="Nhà số 86 Phan Chu Trinh">Nhà số 86 Phan Chu Trinh</option>';
+            Name_options_str  += '<option value="Niết Bàn Tịnh Xá">Niết Bàn Tịnh Xá</option>';
+            Name_options_str  += '<option value="Thích Ca Phật Đài">Thích Ca Phật Đài</option>';
+            Name_options_str  += '<option value="Trận địa pháo cổ Cầu Đá">Trận địa pháo cổ Cầu Đá</option>';
+            Name_options_str  += '<option value="Trận địa pháo cổ trên núi Tao Phùng">Trận địa pháo cổ trên núi Tao Phùng</option>';
+            Name_options_str  += '<option value="Trận địa pháo cổ và hầm thủy lôi Núi Lớn">Trận địa pháo cổ và hầm thủy lôi Núi Lớn</option>';
+            Name_options_str  += '<option value="Trụ sở Ủy ban Việt Minh tại Vũng Tàu">Trụ sở Ủy ban Việt Minh tại Vũng Tàu</option>';
+            Name_options_str  += '<option value="Ăng ten Parapon (dài Viba) - Núi Lớn">Ăng ten Parapon (dài Viba) - Núi Lớn</option>';
+            Name_options_str  += '<option value="Đình Thắng Tam">Đình Thắng Tam</option>';
+            Name_options_str  += '<option value="Đồn nhà máy nước">Đồn nhà máy nước</option>';
+            sel_Name.innerHTML = Name_options_str;
+            div_Name.appendChild(sel_Name);
+            var lab_Name = document.createElement('div');
+            lab_Name.innerHTML = 'Name';
+            lab_Name.className = 'filterlabel';
+            div_Name.appendChild(lab_Name);
+            var reset_Name = document.createElement('div');
+            reset_Name.innerHTML = 'clear filter';
+            reset_Name.className = 'filterlabel';
+            reset_Name.onclick = function() {
+                var options = document.getElementById("sel_Name").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_Name.appendChild(reset_Name);
+        resetLabels([layer_CcQunHuynVngTu_1]);
+        map.on("zoomend", function(){
+            resetLabels([layer_CcQunHuynVngTu_1]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_CcQunHuynVngTu_1]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_CcQunHuynVngTu_1]);
+        });
+        </script>
+    </body>
+</html>
